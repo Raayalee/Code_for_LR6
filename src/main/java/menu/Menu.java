@@ -10,15 +10,13 @@ import java.util.Scanner;
  * Може бути командою для іншого меню (багаторівневе меню)
  */
 public class Menu {
-    private Map<String, Command> commands;  // Мапа команд: ключ -> команда
-    private String name;                    // Назва меню
-    private boolean isRunning;              // Стан виконання
-    private Scanner scanner;                // Для читання вводу
+    private Map<String, Command> commands;   // Мапа команд
+    private String name;                     // Назва меню
+    private Scanner scanner;                 // Для читання вводу
 
     public Menu(String name) {
         this.name = name;
         this.commands = new HashMap<>();
-        this.isRunning = false;
         this.scanner = new Scanner(System.in);
     }
 
@@ -30,14 +28,12 @@ public class Menu {
     }
 
     /**
-     * Метод help - реалізований БЕЗ інтерфейсу Command
-     * Формує підказку користувача на основі мапи команд
+     * Метод help
      */
     private void help() {
         System.out.println("\n--- " + name + " ---");
         System.out.println("Available commands:");
 
-        // Пробігаємо по мапі та формуємо підказку
         for (Map.Entry<String, Command> entry : commands.entrySet()) {
             String key = entry.getKey();
             String description = entry.getValue().getDescription();
@@ -49,40 +45,42 @@ public class Menu {
     }
 
     /**
-     * Головний метод run - циклічно запитує користувача про команди
+     * Метод exit — просто виводить повідомлення
+     */
+    private void exit() {
+        System.out.println("Thanks for using our program. Have a good day!");
+    }
+
+    /**
+     * Головний цикл run без isRunning
      */
     public void run() {
-        isRunning = true;
         System.out.println("Welcome to the tariff management system!");
         help();
 
-        // Головний цикл програми
-        while (isRunning) {
+        while (true) {
             System.out.print("\nEnter the number of the command: ");
             String input = scanner.nextLine().trim();
 
-            // Команда exit - реалізована БЕЗ інтерфейсу Command
             if (input.equalsIgnoreCase("exit")) {
                 exit();
-                continue;
+                break;      // вихід з циклу
             }
 
-            // Команда help - реалізована БЕЗ інтерфейсу Command
             if (input.equalsIgnoreCase("help")) {
                 help();
                 continue;
             }
 
-            // Розділяємо ввід на команду та параметри (як git checkout new_branch)
+            // Розділення команди та параметрів
             String[] parts = input.split(" ", 2);
             String commandKey = parts[0];
             String parameters = parts.length > 1 ? parts[1] : "";
 
-            // Шукаємо команду в мапі
             Command command = commands.get(commandKey);
+
             if (command != null) {
                 try {
-                    // Виконуємо команду з параметрами
                     command.execute(parameters);
                 } catch (Exception e) {
                     System.out.println("Error while executing command: " + e.getMessage());
@@ -92,15 +90,6 @@ public class Menu {
                 System.out.println("Enter 'help' to view available commands");
             }
         }
-    }
-
-    /**
-     * Метод exit - реалізований БЕЗ інтерфейсу Command
-     */
-    private void exit() {
-        System.out.println("Thanks for using our program. Have a good day!");
-        isRunning = false;
-        scanner.close();
     }
 
     /**
