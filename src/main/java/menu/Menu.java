@@ -1,13 +1,13 @@
 package menu;
 
 import command.Command;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 /**
  * Клас меню - відповідає за виклик команд та отримання даних від користувача
- * Може бути командою для іншого меню (багаторівневе меню)
  */
 public class Menu {
     private Map<String, Command> commands;   // Мапа команд
@@ -20,51 +20,37 @@ public class Menu {
         this.scanner = new Scanner(System.in);
     }
 
-    /**
-     * Додати команду до меню
-     */
     public void addCommand(String key, Command command) {
         commands.put(key, command);
     }
 
-    /**
-     * Метод help
-     */
     private void help() {
         System.out.println("\n--- " + name + " ---");
         System.out.println("Available commands:");
-
         for (Map.Entry<String, Command> entry : commands.entrySet()) {
             String key = entry.getKey();
             String description = entry.getValue().getDescription();
             System.out.println(key + " - " + description);
         }
-
         System.out.println("help - Show this list");
         System.out.println("exit - Exit the program");
     }
 
-    /**
-     * Метод exit — просто виводить повідомлення
-     */
     private void exit() {
-        System.out.println("Thanks for using our program. Have a good day!");
+        System.out.println("Thanks for using the program. Bye!");
     }
 
-    /**
-     * Головний цикл run без isRunning
-     */
     public void run() {
         System.out.println("Welcome to the tariff management system!");
         help();
 
         while (true) {
-            System.out.print("\nEnter the number of the command: ");
+            System.out.print("\nEnter the number of the command (or 'help'): ");
             String input = scanner.nextLine().trim();
 
             if (input.equalsIgnoreCase("exit")) {
                 exit();
-                break;      // вихід з циклу
+                break;
             }
 
             if (input.equalsIgnoreCase("help")) {
@@ -93,7 +79,7 @@ public class Menu {
     }
 
     /**
-     * Може бути використаний як команда для іншого меню
+     * Для використання меню як команди (підменю)
      */
     public void execute(String parameters) {
         run();

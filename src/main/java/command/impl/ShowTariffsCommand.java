@@ -1,11 +1,19 @@
 package command.impl;
 
 import command.Command;
+import model.Tariff;
+
+import java.util.List;
 
 /**
- * Команда відображення тарифів, пустує до наступних лабораорних
+ * Показати усі тарифи
  */
 public class ShowTariffsCommand implements Command {
+    private final List<Tariff> tariffs;
+
+    public ShowTariffsCommand(List<Tariff> tariffs) {
+        this.tariffs = tariffs;
+    }
 
     @Override
     public String getDescription() {
@@ -14,7 +22,11 @@ public class ShowTariffsCommand implements Command {
 
     @Override
     public void execute(String parameters) {
-        // Поки що пусто
-        System.out.println("Command: Showing all tariffs");
+        if (tariffs.isEmpty()) {
+            System.out.println("No tariffs available.");
+            return;
+        }
+        System.out.println("Tariffs:");
+        tariffs.forEach(System.out::println);
     }
 }
